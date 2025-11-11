@@ -74,21 +74,7 @@ if 'pipeline' not in st.session_state:
             st.error(f"❌ Error initializing system: {str(e)}")
             st.stop()
 
-with st.sidebar:
-    st.header("🔧 System Status")
-    transformer_status = st.session_state.pipeline.case_analyzer.is_transformer_running()
-    if transformer_status:
-        st.success("✅ Transformers: Running")
-    else:
-        st.info("ℹ️ Transformers: Loaded (not processing)")
-    device = st.session_state.pipeline.case_analyzer.device
-    st.write(f"**Device:** {device.upper()}")
-    if st.session_state.pipeline.case_analyzer.sentence_model:
-        st.success("✅ Sentence Transformers: Available")
-    else:
-        st.warning("⚠️ Sentence Transformers: Not available")
-
-tab1, tab2, tab3, tab4 = st.tabs(["📄 Upload Case", "📁 Individual File Analysis", "📊 Batch Analysis", "ℹ️ About"])
+tab1, tab2, tab3 = st.tabs(["📄 Upload Case", "📁 Individual File Analysis", "📊 Batch Analysis"])
 
 with tab1:
     st.header("📄 Upload and Analyze Single Case")
@@ -117,7 +103,7 @@ with tab1:
                     
                     st.success("✅ Analysis Complete!")
                     
-                    col1, col2, col3 = st.columns(3)
+                    col1, col2 = st.columns(2)
                     
                     with col1:
                         st.subheader("📋 Case Information")
@@ -141,25 +127,6 @@ with tab1:
                             st.success("✅ Punishment matches IPC standards")
                         else:
                             st.warning("⚠️ Punishment discrepancy detected")
-                    
-                    with col3:
-                        st.subheader("👥 Demographics")
-                        demographics = result.get('analysis', {}).get('demographics', {})
-                        demo_found = False
-                        if demographics.get('accused_gender'):
-                            st.write(f"**Accused:** {demographics['accused_gender'].title()}")
-                            demo_found = True
-                        if demographics.get('victim_gender'):
-                            st.write(f"**Victim:** {demographics['victim_gender'].title()}")
-                            demo_found = True
-                        if demographics.get('accused_caste'):
-                            st.write(f"**Accused Caste:** {demographics['accused_caste']}")
-                            demo_found = True
-                        if demographics.get('victim_caste'):
-                            st.write(f"**Victim Caste:** {demographics['victim_caste']}")
-                            demo_found = True
-                        if not demo_found:
-                            st.info("No demographic information extracted")
                     
                     st.divider()
                     
@@ -337,7 +304,7 @@ with tab2:
                         
                         st.success("✅ Analysis Complete!")
                         
-                        col1, col2, col3 = st.columns(3)
+                        col1, col2 = st.columns(2)
                         
                         with col1:
                             st.subheader("📋 Case Information")
@@ -361,25 +328,6 @@ with tab2:
                                 st.success("✅ Punishment matches IPC standards")
                             else:
                                 st.warning("⚠️ Punishment discrepancy detected")
-                        
-                        with col3:
-                            st.subheader("👥 Demographics")
-                            demographics = result.get('analysis', {}).get('demographics', {})
-                            demo_found = False
-                            if demographics.get('accused_gender'):
-                                st.write(f"**Accused:** {demographics['accused_gender'].title()}")
-                                demo_found = True
-                            if demographics.get('victim_gender'):
-                                st.write(f"**Victim:** {demographics['victim_gender'].title()}")
-                                demo_found = True
-                            if demographics.get('accused_caste'):
-                                st.write(f"**Accused Caste:** {demographics['accused_caste']}")
-                                demo_found = True
-                            if demographics.get('victim_caste'):
-                                st.write(f"**Victim Caste:** {demographics['victim_caste']}")
-                                demo_found = True
-                            if not demo_found:
-                                st.info("No demographic information extracted")
                         
                         st.divider()
                         
@@ -630,41 +578,3 @@ with tab3:
             except Exception as e:
                 st.error(f"❌ Error during batch analysis: {str(e)}")
                 st.exception(e)
-
-with tab4:
-    st.header("ℹ️ About the System")
-    st.markdown("""
-    ### Legal Bias Detection System
-    
-    This system uses advanced NLP and machine learning to detect potential bias in legal court proceedings.
-    
-    **Features:**
-    - 📄 **Single Case Analysis**: Upload and analyze individual court proceeding PDFs
-    - 📁 **Individual File Analysis**: Select and analyze specific cases from your folder
-    - 📊 **Batch Processing**: Analyze multiple cases at once
-    - 🎯 **Multi-Type Bias Detection**: Detects gender, caste, religious, and socioeconomic bias
-    - ⚖️ **IPC Code Comparison**: Compares actual punishments with expected IPC code standards
-    - 🔍 **Comprehensive Analysis**: Extracts demographics, charges, outcomes, and bias indicators
-    
-    **How It Works:**
-    1. Extracts text from court proceeding PDFs
-    2. Analyzes case facts using BERT and NLP models
-    3. Matches charges with IPC penal code sections
-    4. Compares expected vs actual punishments
-    5. Detects bias through pattern matching and discrepancy analysis
-    
-    **Bias Detection Methods:**
-    - Pattern matching for biased language
-    - Punishment discrepancy analysis
-    - Demographic context evaluation
-    - Legal reasoning pattern detection
-    
-    **Bias Score Interpretation:**
-    - **0%**: No bias detected
-    - **1-10%**: Low bias indicators
-    - **10-20%**: Moderate bias indicators
-    - **20%+**: High bias indicators
-    
-    **Note:** This system is designed to assist in bias detection and analysis. 
-    Results should be reviewed by legal experts and should not be used as the sole basis for legal decisions.
-    """)
